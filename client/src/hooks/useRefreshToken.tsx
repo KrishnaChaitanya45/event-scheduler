@@ -9,20 +9,26 @@ const useRefreshToken = () => {
   const router = useNavigate();
   const refresh = async () => {
     try {
-      const response = await axios.get("/auth/token", {
+      const response = await axios.get("/auth/refresh-token", {
         withCredentials: true,
       });
-      console.log(response.data.accessToken);
       const prevAuth = { ...auth };
-      prevAuth.accessToken = response.data.accessToken;
+      prevAuth.accessToken = response.data.tokens.accessToken;
       prevAuth.user = response.data.user;
       dispatch(setAuth(prevAuth));
-      return response.data.accessToken;
+      return response.data.tokens.accessToken;
     } catch (error: any) {
-      if (error.response.status === 400) {
-        //TODO add a logout hook useLogout and send request to backend to remove the cookie for refresh token from the backend
-        dispatch(setAuth({}));
-        router("/login");
+      if (error.response.status === 401) {
+        //@ts-ignore
+        if (auth?.accessToken == "") {
+          dispatch(
+            setAuth({
+              accessToken: "",
+              user: null,
+            })
+          );
+          router("/auth");
+        }
       }
     }
   };

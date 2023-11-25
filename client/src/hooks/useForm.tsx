@@ -16,7 +16,6 @@ export default function useForm(initialValues: any): [any, any, any, any] {
 
   function handleChange(e: any, isSocial?: boolean) {
     const { name, value } = e.target;
-    console.log(name, value);
     if (isSocial) {
       const previousValues = JSON.parse(JSON.stringify(values));
       previousValues.socials[name] = value;
@@ -25,11 +24,19 @@ export default function useForm(initialValues: any): [any, any, any, any] {
       setValues({ ...values, [name]: value });
     }
   }
-  console.log(values);
   function resetValue(name: string) {
     setValues({ ...values, [name]: "" });
   }
-  function validateRegex(property: "name" | "email" | "password") {
+  function validateRegex(
+    property:
+      | "name"
+      | "email"
+      | "password"
+      | "title"
+      | "description"
+      | "label"
+      | "date"
+  ) {
     const regex = VALIDATION_CONSTANTS[property];
     return regex.test(values[property]);
   }
@@ -43,7 +50,13 @@ export default function useForm(initialValues: any): [any, any, any, any] {
       error: false,
     };
     Object.keys(values).forEach((property) => {
-      if (!validateRegex(property as "name" | "email" | "password")) {
+      if (
+        property != "date" &&
+        property != "label" &&
+        !validateRegex(
+          property as "name" | "email" | "password" | "title" | "description"
+        )
+      ) {
         isValid =
           property === "password"
             ? {
@@ -66,7 +79,14 @@ export default function useForm(initialValues: any): [any, any, any, any] {
                 error: true,
               };
       }
+      if (property === "date" && values.date === undefined) {
+        isValid = {
+          ...isValid,
+          error: true,
+        };
+      }
     });
+
     return isValid;
   }
   console.log("VALUES INSIDE CUSTOM FORM", values);

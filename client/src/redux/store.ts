@@ -1,8 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import AuthReducer from "./features/Auth";
+import EventsReducer from "./features/Events";
 export const store = configureStore({
   reducer: {
     auth: AuthReducer,
+    events: EventsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

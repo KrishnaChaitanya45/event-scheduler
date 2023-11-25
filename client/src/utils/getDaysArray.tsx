@@ -15,3 +15,4 @@ export function getMonth(month = moment().month()) {
   });
   return daysMatrix;
 }
+console.table(getMonth());

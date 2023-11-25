@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { USER_TYPE } from "../../types/USER_TYPES";
 
 type AuthState = {
-  auth: { user: any; accessToken: any } | {};
+  auth: { user: USER_TYPE | null; accessToken: string };
   loginOrRegister: "login" | "register";
 };
 
@@ -19,7 +20,7 @@ export const auth = createSlice({
   reducers: {
     setAuth: (
       state,
-      action: PayloadAction<{ user: any; accessToken: string } | {}>
+      action: PayloadAction<{ user: USER_TYPE | null; accessToken: string }>
     ) => {
       state.auth = action.payload;
     },

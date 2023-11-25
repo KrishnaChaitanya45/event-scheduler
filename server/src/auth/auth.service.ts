@@ -128,10 +128,11 @@ export class AuthService {
         maxAge: 60 * 60 * 24 * 7,
         secure: true,
       });
-      return {
+      return res.json({
+        message: 'Success',
         user,
         tokens,
-      };
+      });
     } catch (error) {
       return new trpc.TRPCError({
         code: error.code,
@@ -195,27 +196,19 @@ export class AuthService {
         },
       });
       if (!user) throw new ForbiddenException('Access Denied');
-      const refreshTokenMatches = await argon.verify(user.token, refreshToken);
 
-      if (refreshTokenMatches) {
-        const tokens = await this.getTokens(userId, user.email);
-        await this.updateRefreshTokenHash(userId, tokens.refreshToken);
-        res.cookie('refreshToken', tokens.refreshToken, {
-          httpOnly: true,
-          sameSite: 'none',
-          maxAge: 60 * 60 * 24 * 30,
-          secure: true,
-        });
-        return res.json({
-          message: 'Success',
-          tokens,
-        });
-      } else {
-        res.clearCookie('refreshToken');
-        return res.status(401).json({
-          message: 'Unauthorized',
-        });
-      }
+      const tokens = await this.getTokens(userId, user.email);
+      await this.updateRefreshTokenHash(userId, tokens.refreshToken);
+      res.cookie('refreshToken', tokens.refreshToken, {
+        httpOnly: true,
+        sameSite: 'none',
+        maxAge: 60 * 60 * 24 * 30,
+        secure: true,
+      });
+      return res.json({
+        message: 'Success',
+        tokens,
+      });
     } catch (error) {
       console.log(error, 'ERROR FOUND');
       return error;

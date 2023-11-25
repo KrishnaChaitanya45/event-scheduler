@@ -1,9 +1,11 @@
+import { Event_Type } from "./EVENT_TYPES";
+
 export type USER_TYPE = {
   email: string;
   password: string;
   name: string;
-  id: number;
-  events: any[];
+  id: string;
+  events: Event_Type[];
   token: string | null;
   createdAt: string;
   updatedAt: string;

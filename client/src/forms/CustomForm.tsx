@@ -4,9 +4,10 @@ import { FormEvent, useRef } from "react";
 import { Login_Type, Register_Type, USER_TYPE } from "../types/USER_TYPES";
 
 import { useNavigate } from "react-router-dom";
+import { Event_Type } from "../types/EVENT_TYPES";
 type PropsType = {
-  initialValues: Register_Type | Login_Type;
-  type?: "register" | "login";
+  initialValues: Register_Type | Login_Type | Event_Type;
+  type?: "register" | "login" | "event";
   submitHandler: (
     e: FormEvent<HTMLFormElement>,
     values: Register_Type | Login_Type
@@ -20,8 +21,8 @@ type PropsType = {
     } | null;
     error?: boolean;
     message?: string;
-    type?: "register" | "login";
-  }>;
+    type?: "register" | "login" | "event";
+  }> | void;
 };
 export default function CustomForm({
   initialValues,
@@ -35,27 +36,32 @@ export default function CustomForm({
 
   return (
     <form
-      className="flex flex-col items-center justify-center gap-6 absolute top-[50%] -translate-y-[30%] -translate-x-[-50%] right-[50%] min-w-[70vw] lg:min-w-[30vw] xl:min-w-fit "
+      className={`flex flex-col items-center justify-center gap-6 ${
+        // @ts-ignore
+        !initialValues?.label &&
+        "absolute top-[50%] -translate-y-[30%] -translate-x-[-50%] right-[50%]"
+      } min-w-[70vw] lg:min-w-[30vw] xl:min-w-fit `}
       onSubmit={async (e) => {
         e.preventDefault();
+        console.log(isValid(Object.keys(values)));
         if (!isValid(Object.keys(values)).error) {
           const data = await submitHandler(e, values);
           console.log("DATA", data);
-          if (!data.error) {
+          if (!data?.error) {
             errorRef.current.style.display = "block";
             errorRef.current.innerText =
-              data.type === "register"
+              data?.type === "register"
                 ? "Registered Successfully 🚀"
                 : "Login Successful 🚀";
             errorRef.current.style.backgroundColor = "#4CAF50";
             setTimeout(() => {
               errorRef.current.style.display = "none";
-              router("/home");
-            }, 3000);
+              router("/");
+            }, 2000);
           } else {
             errorRef.current.style.display = "block";
             errorRef.current.innerText =
-              data.message || "Authentication Failed 😥";
+              data?.message || "Authentication Failed 😥";
             errorRef.current.style.backgroundColor = "#F44336";
             setTimeout(() => {
               errorRef.current.style.display = "none";
@@ -63,7 +69,16 @@ export default function CustomForm({
           }
         } else {
           errorRef.current.style.display = "block";
-          console.log("REACHED TO THE ERROR HANDLER");
+
+          if (type == "event") {
+            errorRef.current.innerText =
+              isValid(Object.keys(values)).title ||
+              isValid(Object.keys(values)).description;
+            setTimeout(() => {
+              errorRef.current.style.display = "none";
+            }, 3000);
+            return;
+          }
           if (
             values.password.length < 1 ||
             (type === "register" && values.name.length < 1) ||
@@ -75,6 +90,7 @@ export default function CustomForm({
             }, 3000);
             return;
           }
+          console.log("REACHED TO THE ERROR HANDLER");
           errorRef.current.innerText =
             type === "register"
               ? isValid(Object.keys(values)).name ||
@@ -82,6 +98,8 @@ export default function CustomForm({
                 isValid(Object.keys(values)).password
               : isValid(Object.keys(values)).email ||
                 isValid(Object.keys(values)).password;
+
+          ("Invalid Input");
           setTimeout(() => {
             errorRef.current.style.display = "none";
           }, 3000);
@@ -89,7 +107,7 @@ export default function CustomForm({
       }}
     >
       <p
-        className="bg-theme_pink/70 w-[100%] text-center text-sm py-2 rounded-xl font-poppins hidden"
+        className="bg-[#FF836D] w-[100%] text-center text-sm py-2 rounded-xl font-poppins hidden"
         ref={errorRef}
       ></p>
       {Object.keys(initialValues).map((keyName, i) => (
@@ -97,7 +115,9 @@ export default function CustomForm({
           uniqueKey={i}
           name={keyName}
           key={i}
-          isText={keyName !== "password"}
+          isText={
+            keyName !== "password" && keyName !== "date" && keyName !== "label"
+          }
           isPassword={keyName === "password"}
           value={values[keyName]}
           resetValue={resetValue}

@@ -31,11 +31,11 @@ export class AuthController {
 
   @Post('/login')
   @HttpCode(201)
-  login(
+  async login(
     @Body() createUserDto: loginUserDTO,
     @Res({ passthrough: true }) res: any,
   ) {
-    return this.authService.login(createUserDto, res);
+    return await this.authService.login(createUserDto, res);
   }
 
   @Get('/logout')
