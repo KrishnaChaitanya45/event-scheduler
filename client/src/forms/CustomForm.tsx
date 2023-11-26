@@ -52,7 +52,9 @@ export default function CustomForm({
             errorRef.current.innerText =
               data?.type === "register"
                 ? "Registered Successfully 🚀"
-                : "Login Successful 🚀";
+                : data?.type == "login"
+                ? "Login Successful 🚀"
+                : "Success  ✅";
             errorRef.current.style.backgroundColor = "#4CAF50";
             setTimeout(() => {
               errorRef.current.style.display = "none";

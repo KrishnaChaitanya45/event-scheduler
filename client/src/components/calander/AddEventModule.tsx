@@ -27,6 +27,7 @@ import { FormEvent } from "react";
 import { FaEdit } from "react-icons/fa";
 import { axiosPrivate } from "../../api/axios";
 import { Link } from "react-router-dom";
+import useAxiosPrivate from "../../hooks/useAxiosTokenPrivate";
 function AddEventModule({ data }: { data?: string }) {
   const dispatch = useAppDispatch();
   let { isEventModelOpen, events, labelsSelected } = AppSelector(
@@ -36,7 +37,7 @@ function AddEventModule({ data }: { data?: string }) {
   function closeHandler() {
     dispatch(setEventModelOpen({ isOpen: false, date: dayjs() }));
   }
-
+  const axios = useAxiosPrivate();
   const [editMode, setEditMode] = useState<number>(-1);
   const errorRef = useRef<HTMLParagraphElement | null>(null);
   const [error, setError] = useState<string>("");
@@ -57,19 +58,10 @@ function AddEventModule({ data }: { data?: string }) {
         setError("Adding Event..!");
       }
 
-      const addEventResult = await axiosPrivate.post(
-        "/events",
-        {
-          ...values,
-          date: values.date?.toISOString(),
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${auth.accessToken}`,
-          },
-        }
-      );
+      const addEventResult = await axios.post("/events", {
+        ...values,
+        date: values.date?.toISOString(),
+      });
       if (!addEventResult.data) {
         throw new Error("Error adding event");
       }
@@ -91,12 +83,8 @@ function AddEventModule({ data }: { data?: string }) {
       errorRef.current?.classList.add("text-yellow-500");
       setError("Deleting..!");
 
-      const deleteEventResult = await axiosPrivate.delete(`/events/${evt.id}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${auth.accessToken}`,
-        },
-      });
+      const deleteEventResult = await axios.delete(`/events/${evt.id}`);
+
       if (!deleteEventResult.data) {
         errorRef.current?.classList.remove("text-yellow-500");
         errorRef.current?.classList.add("text-red-500");
@@ -135,7 +123,7 @@ function AddEventModule({ data }: { data?: string }) {
       errorRef.current?.classList.remove("text-red-500");
       errorRef.current?.classList.add("text-yellow-500");
       setError("Updating..!");
-      const updateEventResult = await axiosPrivate.patch(
+      const updateEventResult = await axios.patch(
         `/events/${
           Events.events &&
           Events.events.length > 0 &&
@@ -144,12 +132,6 @@ function AddEventModule({ data }: { data?: string }) {
         {
           ...values,
           date: values.date?.toISOString(),
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${auth.accessToken}`,
-          },
         }
       );
       if (!updateEventResult.data) {
@@ -164,24 +146,21 @@ function AddEventModule({ data }: { data?: string }) {
       setTimeout(() => {
         setError("");
       }, 3000);
-      //@ts-ignore
-      dispatch(updateEvent(valuesWithId));
-      //@ts-ignore
-      if (labelsSelected.includes(valuesWithId.label)) return;
-      //@ts-ignore
-      dispatch(setLabelsSelected(valuesWithId.label));
+      dispatch(updateEvent(updateEventResult.data));
+      if (!labelsSelected.includes(updateEventResult.data.label)) {
+        dispatch(setLabelsSelected(updateEventResult.data.label));
+      }
+      dispatch(setEventModelOpen({ isOpen: false, date: dayjs() }));
       Events.events &&
         setEvents({
           ...Events,
-          //@ts-ignore
           events: Events.events.map((event) => {
-            if (event.id === valuesWithId.id) {
-              return valuesWithId;
+            if (event.id === updateEventResult.data.id) {
+              return updateEventResult.data;
             }
             return event;
           }),
         });
-      setEventModelOpen({ isOpen: false, date: dayjs() });
     } else {
       return { error: true };
     }
