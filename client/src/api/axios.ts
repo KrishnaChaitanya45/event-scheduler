@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "http://localhost:5000/";
+const baseURL = "https://tough-calf-bathing-suit.cyclic.app/";
 export default axios.create({
   baseURL: baseURL,
 });
