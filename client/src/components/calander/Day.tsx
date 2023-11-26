@@ -48,7 +48,7 @@ function Day({
 
   return (
     <motion.div
-      className="w-full h-full min-h-[10vh] min-w-[5vw] sm:border-[1px] text-black sm:border-[#ebebeb] "
+      className="w-full h-full min-h-[10vh] min-w-[7vw] sm:border-[1px] text-black sm:border-[#ebebeb] "
       whileHover={{
         scale: 1.1,
         backgroundColor: "rgba(0,0,0)",
@@ -83,14 +83,14 @@ function Day({
         )}
       </button>
       {filteredEvents.length > 0 && (
-        <div className="flex flex-row items-center justify-start gap-2 py-2 px-4">
+        <div className="flex flex-row items-center flex-wrap  justify-start sm:gap-2  py-2 px-4">
           {filteredEvents.map((event, i) => (
             <div
               key={i}
               style={{
                 backgroundColor: event.label,
               }}
-              className=" text-white rounded-lg p-2 text-sm"
+              className=" text-white rounded-lg p-2 text-sm -mx-[5px] sm:mx-0"
             ></div>
           ))}
         </div>
