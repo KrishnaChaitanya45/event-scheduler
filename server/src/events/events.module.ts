@@ -7,6 +7,7 @@ import { AccessTokenStrategy, RefreshTokenStrategy } from 'src/strategies';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { JwtModule } from '@nestjs/jwt';
 
+//? Events module has all the controllers, providers and imports for the events
 @Module({
   controllers: [EventsController],
   providers: [AccessTokenStrategy, RefreshTokenStrategy, EventsService],

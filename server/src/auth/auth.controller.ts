@@ -16,6 +16,7 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 import { AccessTokenGuard, RefreshTokenGuard } from 'src/common/guards';
 import { GetCurrentUser } from 'src/common/decorators';
 
+//? All the different routes for the authentication are handled here
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

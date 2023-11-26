@@ -2,6 +2,11 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
 import { Injectable } from '@nestjs/common/decorators';
+//? the refresh token strategy is used to validate the refresh token
+//? the refresh token is used to generate a new access token
+//? the refresh token is stored in a cookie ( from client )
+//? we extract the refresh token from the cookie and validate it
+//? if it is valid, we generate a new access token
 @Injectable()
 export class RefreshTokenStrategy extends PassportStrategy(
   Strategy,
@@ -19,7 +24,6 @@ export class RefreshTokenStrategy extends PassportStrategy(
     });
   }
   private static extractJWT(req: Request): string | null {
-    console.log(req.cookies);
     if (
       req.cookies &&
       'refreshToken' in req.cookies &&

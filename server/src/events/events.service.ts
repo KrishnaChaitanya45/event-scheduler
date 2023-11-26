@@ -3,6 +3,8 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
+//? CRUD event operations are handled using this service
+
 @Injectable()
 export class EventsService {
   constructor(private prisma: PrismaService) {}
@@ -74,14 +76,15 @@ export class EventsService {
     });
   }
 
-  remove(id: string, userId: string) {
-    const user = this.prisma.user.findUnique({
+  async remove(id: string, userId: string) {
+    const user = await this.prisma.user.findUnique({
       where: { id: userId },
     });
+    console.log(user, id);
     if (!user) {
       throw new Error('User not found');
     }
-    return this.prisma.event.delete({
+    return await this.prisma.event.deleteMany({
       where: { id: id },
     });
   }

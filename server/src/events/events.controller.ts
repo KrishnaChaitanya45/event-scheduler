@@ -15,6 +15,7 @@ import { UpdateEventDto } from './dto/update-event.dto';
 import { AccessTokenGuard } from 'src/common/guards';
 import { GetCurrentUser } from 'src/common/decorators';
 
+//? All the different routes for the events are handled here
 @Controller('events')
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}

@@ -7,6 +7,7 @@ export function createTRPCContext({ req, res }: CreateExpressContextOptions) {
     res,
   };
 }
+//? Initialized the TRPC server
 type contextType = inferAsyncReturnType<typeof createTRPCContext>;
 @Injectable()
 export class TRPCService {

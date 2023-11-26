@@ -9,7 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
 import { TrpcRouter } from './trpc/trpc.router';
 import { EventsModule } from './events/events.module';
-
+//? This has all the services, procedures and modules of the application
 @Module({
   imports: [PrismaModule, AuthModule, EventsModule],
   controllers: [AppController],

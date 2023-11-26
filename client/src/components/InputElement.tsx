@@ -104,7 +104,7 @@ export default function InputElement({
           }}
         />
       )}
-      {isPassword && !toggle ? (
+      {isPassword && toggle ? (
         <FaEye
           className="absolute right-4 text-white text-lg cursor-pointer"
           onClick={togglePassword}

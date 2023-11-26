@@ -16,6 +16,8 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt/dist';
 import { Response } from 'express';
 
+//? Login, Logout, Register and Refersh Token operations are handled here and i have used argon2 for hashing the password
+//? some other utility functions are also present here like decoding the jwt token and finding the user by refresh token
 @Injectable()
 export class AuthService {
   constructor(

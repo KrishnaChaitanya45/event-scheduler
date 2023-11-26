@@ -15,7 +15,7 @@ export default function RegisterOrLoginHeading() {
         <h1 className="font-barlow font-[600] text-4xl  lg:text-3xl">
           {registerOrLogin === "register" ? "Sign Up to" : "Sign In to"}
         </h1>
-        <h2 className="font-clash_display text-5xl lg:text-4xl ">
+        <h2 className="font-clash_display  text-4xl ">
           Event
           <span className="font-clash_display font-[600] text-[#D517B8] mx-4">
             Scheduler

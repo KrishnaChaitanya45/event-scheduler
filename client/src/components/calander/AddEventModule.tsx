@@ -77,7 +77,7 @@ function AddEventModule({ data }: { data?: string }) {
       setTimeout(() => {
         setError("");
       }, 3000);
-      dispatch(addEvent({ ...values, id: events.length + 1 }));
+      dispatch(addEvent({ ...addEventResult.data }));
       dispatch(setEventModelOpen({ isOpen: false, date: dayjs() }));
     } else {
       return { error: true };
