@@ -21,7 +21,7 @@ function IndividualDate() {
   });
   return (
     <main className="flex items-center w-full min-h-screen justify-center">
-      <section className="bg-black/70 w-[60%] py-[5vh] rounded-xl flex flex-col items-center">
+      <section className="bg-black/70 w-[85%] sm:w-[50%] py-[5vh] rounded-xl flex flex-col items-center">
         <h1 className="text-white text-2xl font-semibold"> Tasks on {date}</h1>
         <div className="flex flex-col gap-5 mt-8 w-[100%] items-center">
           {Events && Events.length > 0 ? (

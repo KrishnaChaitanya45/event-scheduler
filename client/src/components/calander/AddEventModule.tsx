@@ -197,7 +197,7 @@ function AddEventModule({ data }: { data?: string }) {
               title: "",
               description: "",
               date: Events.date,
-              label: "blue",
+              label: "skyblue",
             }}
             type="event"
             // @ts-ignore
