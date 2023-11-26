@@ -1,6 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { USER_TYPE } from "../../types/USER_TYPES";
 
+//? This Auth Slice is used to store the user and the access token in the redux store
+//? and also to toggle between login and register page
+
 type AuthState = {
   auth: { user: USER_TYPE | null; accessToken: string };
   loginOrRegister: "login" | "register";

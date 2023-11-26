@@ -5,9 +5,13 @@ import {
   AppSelector,
 } from "../../redux/hooks/TypeDeclaredHooks";
 import { setEventModelOpen } from "../../redux/features/Events";
-import { useEffect, useState, useMemo } from "react";
+import { useMemo } from "react";
 import dayjs from "dayjs";
-import { Event_Type } from "../../types/EVENT_TYPES";
+
+//? This component represents the individual day in the calendar
+//? it has the day number and the events of that day
+//? it also has a click event that opens the add event modal
+//? with the selected date
 
 function Day({
   idx,

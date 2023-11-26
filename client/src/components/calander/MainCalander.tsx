@@ -12,6 +12,10 @@ import {
 } from "../../redux/features/Events";
 import { getMonth } from "../../utils/getDaysArray";
 import Day from "./Day";
+//? Display the grid of days using the getMonth function from utils
+//? it also has the previous and next month buttons
+//? and the current month title
+
 function MainCalender() {
   const { currentMonthIdx, currentMonth } = AppSelector(
     (state) => state.events

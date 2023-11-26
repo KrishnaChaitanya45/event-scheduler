@@ -15,6 +15,9 @@ import {
 } from "../redux/features/Events";
 import { Event_Type } from "../types/EVENT_TYPES";
 
+//? Home page has 3 main components
+//? the side bar , the  main calendar and header
+
 function Homepage() {
   const { isEventModelOpen } = AppSelector((state) => state.events);
   const { auth } = AppSelector((state) => state.auth);
@@ -30,11 +33,9 @@ function Homepage() {
           Authorization: `Bearer ${auth?.accessToken}`,
         },
       });
-      console.log(res.data);
       if (res.data.length == 0) return;
       dispatch(setEvents(res.data));
       const labels = res.data.map((evt: Event_Type) => evt.label) as string[];
-      console.log(labels);
       dispatch(addLabel(labels));
     } catch (error) {
       setIsError(true);

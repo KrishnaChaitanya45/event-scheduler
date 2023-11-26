@@ -11,15 +11,14 @@ export default function AuthForm() {
   const context = AppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const submitHandler = async (e: FormEvent<HTMLFormElement>, values: any) => {
+    //? we use the same submit handler for both register and login forms
+    //? so to identify which form is being submitted we use the context
     e.preventDefault();
 
-    console.log("REACHED HERE", values);
     try {
+      //? If the user is registering
       if (context.loginOrRegister === "register") {
-        console.log("REACHED HERE");
-
         const { data } = await axiosPrivate.post("/auth/register", values);
-        console.log("=== REGISTER DATA ===", data);
 
         dispatch(
           setAuth({
@@ -33,12 +32,12 @@ export default function AuthForm() {
           type: context.loginOrRegister,
         };
       } else {
+        //? If the user is logging in
         try {
           const { data } = await axiosPrivate.post("/auth/login", values);
           if (!data) {
             throw new Error("Authentication Failed, Please try again");
           }
-          console.log("=== LOGIN DATA ===", data);
           dispatch(
             setAuth({
               user: data?.user,
@@ -52,13 +51,11 @@ export default function AuthForm() {
             type: context.loginOrRegister,
           };
         } catch (error) {
-          console.log("ERROR", error);
-
           return { error: true };
         }
       }
     } catch (error) {
-      console.log("ERROR", error);
+      //! these errors are handled by the CustomForm component
       return { error: true };
     }
   };

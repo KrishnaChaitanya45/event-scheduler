@@ -25,7 +25,10 @@ const labelsClasses = [
   "#E6E6FA",
   " #CCCCFF",
 ];
-
+//? the InputElement component is used to render the input fields of the form
+//? we use the name property of the input field to identify the value
+//? and based on the props we kinda re use this component for multiple input field requirements
+//? like password fields, text fields, date fields, label fields etc
 export default function InputElement({
   uniqueKey,
   name,

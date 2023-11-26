@@ -1,6 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import AuthReducer from "./features/Auth";
 import EventsReducer from "./features/Events";
+//? Redux Toolkit is a package that helps simplify Redux development.
+//? It includes utilities to simplify common use cases like store setup, creating reducers, etc
+
+//? Store setup using Redux Toolkit
 export const store = configureStore({
   reducer: {
     auth: AuthReducer,

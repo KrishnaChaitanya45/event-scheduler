@@ -9,6 +9,10 @@ import {
   setLabelsSelected,
 } from "../../redux/features/Events";
 import dayjs from "dayjs";
+//? The side bar component contains the filters and the mini calendar
+//? the mini calendar is only visible on desktop and tablet
+//? the filters can be applied to labels and the mini calendar
+//? can be used to select a date and open the add event modal
 function Sidebar() {
   const colorBookmarks = {
     "#98FF98": "Important",
@@ -29,41 +33,44 @@ function Sidebar() {
     console.log(labels);
     return [...new Set(labels)];
   }, [events, labelsSelected]);
-  console.log(labels);
   return (
     <section className="xl:w-[20%] w-[100%] h-[100%] border-r-[2px] border-r-[#ededed] flex flex-row  xl:flex-col justify-between items-start xl:items-start  p-5 xl:order-1 order-2">
       <div>
         <h2 className="text-xl font-semibold ">Filters </h2>
         <ul className="flex flex-col gap-4 items-start justify-start mt-4">
-          {labels.map((label, i) => (
-            <li key={i} className="flex items-center justify-center gap-2">
-              <input
-                type="checkbox"
-                onChange={() => {
-                  label && dispatch(setLabelsSelected(label));
-                }}
-                checked={Boolean(label && labelsSelected.includes(label))}
-                className={`py-1 w-[3vw] h-[3vh] `}
-                style={{
-                  accentColor: label,
-                }}
-              />
-              {label && (
-                <span
-                  className={`${
-                    labelsSelected.includes(label)
-                      ? "text-black"
-                      : "text-gray-500"
-                  } font-semibold text-lg`}
-                >
-                  {
-                    //@ts-ignore
-                    colorBookmarks[label] || "Entertainment"
-                  }
-                </span>
-              )}
-            </li>
-          ))}
+          {labels.length > 0 ? (
+            labels.map((label, i) => (
+              <li key={i} className="flex items-center justify-center gap-2">
+                <input
+                  type="checkbox"
+                  onChange={() => {
+                    label && dispatch(setLabelsSelected(label));
+                  }}
+                  checked={Boolean(label && labelsSelected.includes(label))}
+                  className={`py-1 w-[3vw] h-[3vh] `}
+                  style={{
+                    accentColor: label,
+                  }}
+                />
+                {label && (
+                  <span
+                    className={`${
+                      labelsSelected.includes(label)
+                        ? "text-black"
+                        : "text-gray-500"
+                    } font-semibold text-lg`}
+                  >
+                    {
+                      //@ts-ignore
+                      colorBookmarks[label] || "Entertainment"
+                    }
+                  </span>
+                )}
+              </li>
+            ))
+          ) : (
+            <p className="text-lg text-gray-500 font-semibold">No Labels</p>
+          )}
         </ul>
       </div>
 

@@ -28,6 +28,13 @@ import { FaEdit } from "react-icons/fa";
 import { axiosPrivate } from "../../api/axios";
 import { Link } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosTokenPrivate";
+//? This component is used in two ways
+//? To add a new event and to edit an existing event
+//? Also displayed the 3 latest events of the day
+//? we ue the isEventModelOpen state to determine if the component is in add mode or edit mode ( based on events property )
+//? if the events property is present then the component can be used to edit an event
+//? else it is used to add a new event
+
 function AddEventModule({ data }: { data?: string }) {
   const dispatch = useAppDispatch();
   let { isEventModelOpen, events, labelsSelected } = AppSelector(
@@ -229,8 +236,6 @@ function AddEventModule({ data }: { data?: string }) {
             .slice(0, 3)
             .reverse()
             .map((evt, idx) => {
-              const [editValues, setEditValues] = useState<Event_Type>(evt);
-
               return (
                 <div
                   key={idx}

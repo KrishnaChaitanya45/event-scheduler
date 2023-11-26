@@ -5,6 +5,9 @@ export default function RegisterOrLoginHeading() {
   const { loginOrRegister: registerOrLogin } = AppSelector(
     (state) => state.auth
   );
+  //? This component changes the heading of the register and login form
+  //? using the state
+
   const dispatch = useAppDispatch();
   return (
     <article className="flex flex-col gap-4 h-[100%] items-start justify-center">

@@ -4,6 +4,8 @@ import moment from "moment";
 import { Event_Type } from "../../types/EVENT_TYPES";
 import dayjs, { Dayjs } from "dayjs";
 
+//? CRUD ( Create Read Update Delete ) operations are performed on the events slice
+
 type AuthState = {
   currentMonth: moment.Moment[][];
   currentMonthIdx: number;

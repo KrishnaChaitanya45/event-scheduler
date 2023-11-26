@@ -3,11 +3,11 @@ import { motion } from "framer-motion";
 import { AppSelector, useAppDispatch } from "../redux/hooks/TypeDeclaredHooks";
 import { setLoginOrRegister } from "../redux/features/Auth";
 export default function Navbar() {
-  const [signUpOrIn, setSignUpOrIn] = useState("signUp");
+  //? The cool effect of sign up and sign in ..! Remember ?
+  //? its from here..! use use the state to toggle between the two
   const dispatch = useAppDispatch();
   const registerOrLogin = AppSelector((state) => state.auth.loginOrRegister);
   function toggle() {
-    setSignUpOrIn((prev) => (prev === "signUp" ? "signIn" : "signUp"));
     registerOrLogin === "register"
       ? dispatch(setLoginOrRegister("login"))
       : dispatch(setLoginOrRegister("register"));
@@ -21,7 +21,7 @@ export default function Navbar() {
       <motion.div
         className={`w-[40%] h-[5px] bg-[#9FAFFF] absolute -bottom-4 rounded-lg left-0 `}
         animate={{
-          left: signUpOrIn === "signUp" ? "0%" : "60%",
+          left: registerOrLogin === "register" ? "0%" : "60%",
         }}
         transition={{
           duration: 0.5,

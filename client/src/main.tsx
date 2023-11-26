@@ -6,6 +6,8 @@ import { Providers } from "./redux/Provider.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
+    {/* //? Provider is the redux provider component which provides the store to the
+    app */}
     <Providers>
       <App />
     </Providers>

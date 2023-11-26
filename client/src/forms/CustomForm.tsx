@@ -5,6 +5,8 @@ import { Login_Type, Register_Type, USER_TYPE } from "../types/USER_TYPES";
 
 import { useNavigate } from "react-router-dom";
 import { Event_Type } from "../types/EVENT_TYPES";
+//? some of the types are imported from the types folder and
+//? these are the types that are used in the form
 type PropsType = {
   initialValues: Register_Type | Login_Type | Event_Type;
   type?: "register" | "login" | "event";
@@ -30,6 +32,8 @@ export default function CustomForm({
   submitHandler,
 }: PropsType) {
   console.log(Object.keys(initialValues));
+  //? useForm is a custom hook that is used to handle the form state and it returns some values and functions
+  //? these functions are handy when we are working with forms
   const [values, handleChange, resetValue, isValid] = useForm(initialValues);
   const errorRef = useRef<any>();
   const router = useNavigate();
@@ -43,8 +47,12 @@ export default function CustomForm({
       } min-w-[70vw] lg:min-w-[30vw] xl:min-w-fit `}
       onSubmit={async (e) => {
         e.preventDefault();
-        console.log(isValid(Object.keys(values)));
+        //? the is valid object needs the different keys of the form as the parameter and
+        //? it returns an object with the error message if the value is invalid
         if (!isValid(Object.keys(values)).error) {
+          errorRef.current.style.display = "block";
+          errorRef.current.innerText = "Submitting...";
+          errorRef.current.style.backgroundColor = "#FF836D";
           const data = await submitHandler(e, values);
           console.log("DATA", data);
           if (!data?.error) {
@@ -71,7 +79,7 @@ export default function CustomForm({
           }
         } else {
           errorRef.current.style.display = "block";
-
+          //? custom error messages for feedback
           if (type == "event") {
             errorRef.current.innerText =
               isValid(Object.keys(values)).title ||
@@ -92,7 +100,6 @@ export default function CustomForm({
             }, 3000);
             return;
           }
-          console.log("REACHED TO THE ERROR HANDLER");
           errorRef.current.innerText =
             type === "register"
               ? isValid(Object.keys(values)).name ||
@@ -112,6 +119,8 @@ export default function CustomForm({
         className="bg-[#FF836D] w-[100%] text-center text-sm py-2 rounded-xl font-poppins hidden"
         ref={errorRef}
       ></p>
+      {/* //? Rendering the input elements based on the keys of the initial values
+      //? object */}
       {Object.keys(initialValues).map((keyName, i) => (
         <InputElement
           uniqueKey={i}

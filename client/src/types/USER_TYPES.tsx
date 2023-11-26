@@ -1,5 +1,6 @@
 import { Event_Type } from "./EVENT_TYPES";
 
+//? Some of the types are imported from the types folder and these are the types that are used in the form
 export type USER_TYPE = {
   email: string;
   password: string;

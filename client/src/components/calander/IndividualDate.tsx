@@ -4,6 +4,11 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Event_Type } from "../../types/EVENT_TYPES";
 
+//? for the individual date page we use the useParams hook from react-router-dom to get the date from the url
+//? and then we filter the events array from the redux store to get the events that match the date
+//? and display them
+//? for the route /:date for example /12-12-2021 we display all the events on that date
+
 function IndividualDate() {
   const { date } = useParams();
   const events = AppSelector((state) => state.events.events);

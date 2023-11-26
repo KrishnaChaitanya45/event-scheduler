@@ -3,8 +3,9 @@ import GirlAvatar from "../assets/women_in_background.svg";
 import Navbar from "../components/Navbar";
 import RegisterOrLoginHeading from "../components/RegisterOrLogin._Heading";
 import AuthForm from "../forms/AuthForm";
-type AddFunction = (msg: { msg: string; title: string; type: string }) => void;
 function Register() {
+  //? Register is basically the authentication page which has all the components related to authentication
+  //? I've got used to server components so I've used the same pattern here ( seperating the client components and server components)
   return (
     <main
       className={` text-white  lg:h-screen flex items-center justify-center`}

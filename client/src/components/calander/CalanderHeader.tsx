@@ -8,7 +8,9 @@ import moment from "moment";
 import { setAuth } from "../../redux/features/Auth";
 import { useNavigate } from "react-router-dom";
 import { axiosPrivate } from "../../api/axios";
-
+//? This component is the header of the calendar
+//? it has the title and the add event button
+//? and the logout button ( to logout of course 😅)
 function CalenderHeader() {
   const dispatch = useAppDispatch();
   const auth = AppSelector((state) => state.auth);
@@ -22,14 +24,14 @@ function CalenderHeader() {
   }
   const router = useNavigate();
   return (
-    <nav className="flex justify-between items-center">
+    <nav className="flex justify-between items-center sm:flex-row flex-col gap-[20px]">
       <h1 className="text-4xl text-black font-bold">Calendar</h1>
       <div className="flex items-center justify-center gap-4">
         <button
           className="bg-[#FF836D] sm:px-6 px-3 sm:py-3 py-1 rounded-lg text-lg text-white font-semibold transition-all duration-300 ease-linear hover:bg-white hover:text-[#FF836D]"
           onClick={handleOpenModal}
         >
-          + Add Event
+          Add Event
         </button>
         <button
           className="bg-gray-200 sm:px-6 px-3 sm:py-3 py-1 rounded-lg text-lg text-[#FF836D] font-semibold"

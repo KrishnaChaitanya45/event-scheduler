@@ -11,6 +11,11 @@ const PersistentLogin = () => {
     user: any;
     accessToken: string;
   };
+  //? Instead of storing the access token in the local storage which is vulnerable to XSS attacks,
+  //? we store the access token in the redux store and the refresh token in the cookie ( which cannot be accessed by client side)
+  //? and we use the refresh token to get a new access token when the access token is expired
+  //? so before the user navigates to the home page we check if the access token is present in the redux store
+  //? if not we get one from the refresh token and update the redux store
   useEffect(() => {
     const verifyRefreshToken = async () => {
       try {
