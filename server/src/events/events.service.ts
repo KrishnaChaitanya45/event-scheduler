@@ -62,6 +62,7 @@ export class EventsService {
       throw new Error('User not found');
     }
     const { title, description, date, label } = updateEventDto;
+
     return this.prisma.event.update({
       where: { id: id },
       data: {
