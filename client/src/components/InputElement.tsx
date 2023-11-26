@@ -11,8 +11,20 @@ type InputProps = {
   resetValue: (name: string) => void;
 };
 import { useRef, useState } from "react";
-import { DatePicker } from "@mui/x-date-pickers";
-const labelsClasses = ["indigo", "gray", "green", "blue", "red", "purple"];
+import {
+  DatePicker,
+  DateTimePicker,
+  renderTimeViewClock,
+} from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+const labelsClasses = [
+  "#98FF98",
+  "#FFECB3",
+  "#FF6F61",
+  "#FFD8E1",
+  "#E6E6FA",
+  " #CCCCFF",
+];
 
 export default function InputElement({
   uniqueKey,
@@ -30,8 +42,13 @@ export default function InputElement({
   return (
     <div className="w-[70vw] lg:w-[30vw] xl:w-[20vw] font-abhaya_libre flex items-center">
       {name == "date" ? (
-        <DatePicker
+        <DateTimePicker
           value={value}
+          viewRenderers={{
+            hours: renderTimeViewClock,
+            minutes: renderTimeViewClock,
+            seconds: renderTimeViewClock,
+          }}
           sx={{
             width: "100%",
 
@@ -44,7 +61,7 @@ export default function InputElement({
           onChange={(value) =>
             onChange({ target: { name: "date", value: value } })
           }
-          format="DD/MM/YYYY"
+          // format="DD/MM/YYYY hh:mm a"
           className="w-[100%] rounded-xl border-[1px] focus:outline-none border-[#4461F2] text-white"
         />
       ) : name != "label" ? (

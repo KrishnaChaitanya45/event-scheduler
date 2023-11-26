@@ -10,6 +10,14 @@ import {
 } from "../../redux/features/Events";
 import dayjs from "dayjs";
 function Sidebar() {
+  const colorBookmarks = {
+    "#98FF98": "Important",
+    "#FFECB3": "Office",
+    "#FF6F61": "Refresh",
+    "#FFD8E1": "Personal",
+    "#E6E6FA": "Creativity",
+    "#CCCCFF": "Inspiration",
+  };
   const isMobile = window.innerWidth < 500;
   const { currentMonthIdx, currentMonth, events, labelsSelected } = AppSelector(
     (state) => state.events
@@ -48,7 +56,10 @@ function Sidebar() {
                       : "text-gray-500"
                   } font-semibold text-lg`}
                 >
-                  {label[0]?.toUpperCase() + label.slice(1)}
+                  {
+                    //@ts-ignore
+                    colorBookmarks[label] || "Entertainment"
+                  }
                 </span>
               )}
             </li>
@@ -57,7 +68,7 @@ function Sidebar() {
       </div>
 
       {!isMobile && (
-        <div className="flex flex-col gap-4">
+        <div className="sm:flex sm:flex-col sm:gap-4 hidden">
           <header className="flex justify-between">
             <p className="text-black font-semibold">
               {moment(new Date(moment().year(), currentMonthIdx)).format(
@@ -77,6 +88,13 @@ function Sidebar() {
                         setEventModelOpen({
                           isOpen: true,
                           date: dayjs(day.toDate()),
+                          events: events.filter(
+                            (evt) =>
+                              evt.label &&
+                              dayjs(evt.date).format("D-M-YYYY") ==
+                                dayjs(day.toDate()).format("D-M-YYYY") &&
+                              labelsSelected.includes(evt.label)
+                          ),
                         })
                       );
                     }}

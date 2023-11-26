@@ -29,15 +29,16 @@ export class EventsService {
     return event;
   }
 
-  findAll(userId: string) {
+  findAll(userId: string, req: Request) {
     const user = this.prisma.user.findUnique({
       where: { id: userId },
     });
     if (!user) {
       throw new Error('User not found');
     }
+
     return this.prisma.event.findMany({
-      where: { creatorId: userId },
+      where: { AND: [{ creatorId: userId }] },
     });
   }
 
@@ -60,12 +61,14 @@ export class EventsService {
     if (!user) {
       throw new Error('User not found');
     }
-    const { title, description } = updateEventDto;
+    const { title, description, date, label } = updateEventDto;
     return this.prisma.event.update({
       where: { id: id },
       data: {
         title,
         description,
+        date,
+        label,
       },
     });
   }

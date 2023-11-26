@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -29,8 +30,8 @@ export class EventsController {
 
   @Get()
   @UseGuards(AccessTokenGuard)
-  findAll(@GetCurrentUser('userId') userId: string) {
-    return this.eventsService.findAll(userId);
+  findAll(@GetCurrentUser('userId') userId: string, @Req() req: Request) {
+    return this.eventsService.findAll(userId, req);
   }
 
   @Get(':id')

@@ -19,19 +19,24 @@ import {
   addEvent,
   removeEvent,
   setEventModelOpen,
+  setLabelsSelected,
   updateEvent,
 } from "../../redux/features/Events";
 import { Event_Type } from "../../types/EVENT_TYPES";
 import { FormEvent } from "react";
 import { FaEdit } from "react-icons/fa";
 import { axiosPrivate } from "../../api/axios";
+import { Link } from "react-router-dom";
 function AddEventModule({ data }: { data?: string }) {
   const dispatch = useAppDispatch();
-  let { isEventModelOpen, events } = AppSelector((state) => state.events);
+  let { isEventModelOpen, events, labelsSelected } = AppSelector(
+    (state) => state.events
+  );
   let { auth } = AppSelector((state) => state.auth);
   function closeHandler() {
     dispatch(setEventModelOpen({ isOpen: false, date: dayjs() }));
   }
+
   const [editMode, setEditMode] = useState<number>(-1);
   const errorRef = useRef<HTMLParagraphElement | null>(null);
   const [error, setError] = useState<string>("");
@@ -114,9 +119,77 @@ function AddEventModule({ data }: { data?: string }) {
       console.error("Error deleting event", error);
     }
   };
+  async function editHandler(
+    e: FormEvent<HTMLFormElement>,
+    values: Event_Type
+  ) {
+    const valuesWithId = {
+      ...values,
+      id:
+        Events.events &&
+        Events.events.length > 0 &&
+        Events.events.slice(0, 3).reverse()[editMode].id,
+    };
+    console.log(values);
+    if (values.title && values.description && values.date && values.label) {
+      errorRef.current?.classList.remove("text-red-500");
+      errorRef.current?.classList.add("text-yellow-500");
+      setError("Updating..!");
+      const updateEventResult = await axiosPrivate.patch(
+        `/events/${
+          Events.events &&
+          Events.events.length > 0 &&
+          Events.events.slice(0, 3).reverse()[editMode].id
+        }`,
+        {
+          ...values,
+          date: values.date?.toISOString(),
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth.accessToken}`,
+          },
+        }
+      );
+      if (!updateEventResult.data) {
+        errorRef.current?.classList.remove("text-yellow-500");
+        errorRef.current?.classList.add("text-red-500");
+        setError("Error updating event");
+        return;
+      }
+      errorRef.current?.classList.remove("text-yellow-500");
+      errorRef.current?.classList.add("text-green-500");
+      setError("Updated..!");
+      setTimeout(() => {
+        setError("");
+      }, 3000);
+      //@ts-ignore
+      dispatch(updateEvent(valuesWithId));
+      //@ts-ignore
+      if (labelsSelected.includes(valuesWithId.label)) return;
+      //@ts-ignore
+      dispatch(setLabelsSelected(valuesWithId.label));
+      Events.events &&
+        setEvents({
+          ...Events,
+          //@ts-ignore
+          events: Events.events.map((event) => {
+            if (event.id === valuesWithId.id) {
+              return valuesWithId;
+            }
+            return event;
+          }),
+        });
+      setEventModelOpen({ isOpen: false, date: dayjs() });
+    } else {
+      return { error: true };
+    }
+  }
+
   return (
     <motion.div
-      className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] p-[3vw] flex gap-[5vw] items-start justify-center rounded-lg backdrop-filter  bg-black/70 z-50"
+      className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] p-[3vw] flex md:flex-row flex-col gap-[5vw] items-start justify-center rounded-lg backdrop-filter  bg-black/70 z-50 xl:flex-nowrap md:flex-wrap"
       initial={{ opacity: 0, top: "0%" }}
       animate={{ opacity: 1, top: "50%" }}
       exit={{ opacity: 0, top: "0%" }}
@@ -132,23 +205,49 @@ function AddEventModule({ data }: { data?: string }) {
         <p ref={errorRef} className="text-lg my-4 py-2 text-center">
           {error}
         </p>
-        <CustomForm
-          initialValues={{
-            title: "",
-            description: "",
-            date: Events.date,
-            label: "blue",
-          }}
-          type="event"
-          // @ts-ignore
-          submitHandler={submitHandler}
-        />
+        {editMode == -1 ? (
+          <CustomForm
+            initialValues={{
+              title: "",
+              description: "",
+              date: Events.date,
+              label: "blue",
+            }}
+            type="event"
+            // @ts-ignore
+            submitHandler={submitHandler}
+          />
+        ) : (
+          <CustomForm
+            initialValues={{
+              title:
+                Events.events && Events.events.length > 0
+                  ? Events.events.slice(0, 3).reverse()[editMode].title
+                  : "",
+              description:
+                Events.events && Events.events.length > 0
+                  ? Events.events.slice(0, 3).reverse()[editMode].description
+                  : "",
+              date:
+                Events.events && Events.events.length > 0
+                  ? dayjs(Events.events.slice(0, 3).reverse()[editMode].date)
+                  : dayjs(),
+              label:
+                Events.events && Events.events.length > 0
+                  ? Events.events.slice(0, 3).reverse()[editMode].label
+                  : "",
+            }}
+            type="event"
+            // @ts-ignore
+            submitHandler={editHandler}
+          />
+        )}
       </div>
-      <div className="mt-4 flex flex-col gap-2 min-w-[20vw]">
+      <div className="mt-4 flex flex-col gap-2   md:min-w-[50vw] xl:min-w-[20vw] w-[100%]">
         <h2 className="text-xl text-white font-semibold">Recent Tasks</h2>
         {Events.events && Events.events.length > 0 ? (
           Events.events
-            .slice(0, 2)
+            .slice(0, 3)
             .reverse()
             .map((evt, idx) => {
               const [editValues, setEditValues] = useState<Event_Type>(evt);
@@ -156,88 +255,25 @@ function AddEventModule({ data }: { data?: string }) {
               return (
                 <div
                   key={idx}
-                  className="flex  items-start justify-between w-[100%] rounded-xl px-4 py-2 relative"
+                  className="flex  items-start justify-between w-[100%] rounded-xl sm:px-4 px-2 py-2 relative"
                   style={{
                     backgroundColor: evt.label,
                   }}
                 >
-                  <div className="w-[70%] flex flex-col gap-2 items-start justify-start">
-                    {editMode != idx ? (
-                      <>
-                        <b className="text-lg text-white">{evt.title}</b>
-                        <p className="text-gray-500">{evt.description}</p>{" "}
-                      </>
-                    ) : (
-                      <>
-                        <input
-                          type="text"
-                          maxLength={10}
-                          value={editValues.title}
-                          onChange={(e) => {
-                            setEditValues({
-                              ...editValues,
-                              title: e.target.value,
-                            });
-                          }}
-                          autoFocus={true}
-                          className="focus:outline-none text-white text-lg font-semibold bg-transparent"
-                        />
-                        <input
-                          type="text"
-                          value={editValues.description}
-                          maxLength={20}
-                          onChange={(e) => {
-                            setEditValues({
-                              ...editValues,
-                              description: e.target.value,
-                            });
-                          }}
-                          className="focus:outline-none text-gray-400 text-base font-semibold bg-transparent"
-                        />
-                      </>
-                    )}
+                  <div className="w-[100%] flex flex-col sm:gap-2 gap-1 items-start justify-start">
+                    <b className="text-lg text-white">{evt.title}</b>
+                    <div className="flex justify-between items-center w-[100%]">
+                      <p className="text-gray-500">{evt.description}</p>{" "}
+                      <p className="text-gray-500">
+                        {dayjs(evt.date).format("hh:mm a")}
+                      </p>
+                    </div>
                   </div>
                   <button
                     type="button"
-                    className="bg-yellow-500 p-3 rounded-[50%] absolute top-[-15%] right-[10%]"
+                    className="bg-yellow-500 sm:p-3 p-2 rounded-[50%] absolute top-[-15%] right-[10%]"
                     onClick={async () => {
                       if (editMode != -1) {
-                        errorRef.current?.classList.remove("text-red-500");
-                        errorRef.current?.classList.add("text-yellow-500");
-                        setError("Updating..!");
-                        const updateEventResult = await axiosPrivate.patch(
-                          `/events/${editValues.id}`,
-                          editValues,
-                          {
-                            headers: {
-                              "Content-Type": "application/json",
-                              Authorization: `Bearer ${auth.accessToken}`,
-                            },
-                          }
-                        );
-                        if (!updateEventResult.data) {
-                          errorRef.current?.classList.remove("text-yellow-500");
-                          errorRef.current?.classList.add("text-red-500");
-                          setError("Error updating event");
-                          return;
-                        }
-                        errorRef.current?.classList.remove("text-yellow-500");
-                        errorRef.current?.classList.add("text-green-500");
-                        setError("Updated..!");
-                        setTimeout(() => {
-                          setError("");
-                        }, 3000);
-                        dispatch(updateEvent(editValues));
-                        Events.events &&
-                          setEvents({
-                            ...Events,
-                            events: Events.events.map((event) => {
-                              if (event.id === editValues.id) {
-                                return editValues;
-                              }
-                              return event;
-                            }),
-                          });
                         setEditMode(-1);
                       }
                       setEditMode(idx);
@@ -246,7 +282,7 @@ function AddEventModule({ data }: { data?: string }) {
                     <FaEdit className="text-white text-xl " />
                   </button>
                   <button
-                    className="bg-red-500 p-3 rounded-[50%] absolute top-[-15%] right-[-5%]"
+                    className="bg-red-500 sm:p-3 p-2 rounded-[50%] absolute top-[-15%] right-[-5%]"
                     onClick={async (e) => {
                       e.preventDefault();
                       await deleteHandler(evt);
@@ -261,9 +297,14 @@ function AddEventModule({ data }: { data?: string }) {
           <p className="text-lg text-gray-500 font-semibold">No Tasks</p>
         )}
         {Events.events && Events.events.length > 0 && (
-          <button className="mt-4 bg-black text-white w-[100%] py-2 rounded-lg">
+          <Link
+            to={`/calendar/${dayjs(isEventModelOpen.date)
+              .format("D MM YYYY")
+              .replace(/\s/g, "-")}`}
+            className="mt-4 bg-black text-white w-[100%] py-2 text-center rounded-lg"
+          >
             View More{" "}
-          </button>
+          </Link>
         )}
       </div>
     </motion.div>

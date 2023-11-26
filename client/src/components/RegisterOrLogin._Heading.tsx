@@ -1,7 +1,11 @@
-import { AppSelector } from "../redux/hooks/TypeDeclaredHooks";
+import { setLoginOrRegister } from "../redux/features/Auth";
+import { AppSelector, useAppDispatch } from "../redux/hooks/TypeDeclaredHooks";
 
 export default function RegisterOrLoginHeading() {
-  const registerOrLogin = AppSelector((state) => state.auth.loginOrRegister);
+  const { loginOrRegister: registerOrLogin } = AppSelector(
+    (state) => state.auth
+  );
+  const dispatch = useAppDispatch();
   return (
     <article className="flex flex-col gap-4 h-[100%] items-start justify-center">
       <div className="flex gap-4 lg:flex-col md:flex-row flex-col items-center justify-center lg:items-start">
@@ -24,10 +28,12 @@ export default function RegisterOrLoginHeading() {
         <span
           className="text-[#4461F2] font-poppins font-[500] cursor-pointer text-xl lg:text-base"
           onClick={() => {
-            //@ts-ignore
-            setRegisterOrLogin((prevState: "register" | "login") => {
-              prevState === "register" ? "login" : "register";
-            });
+            dispatch(
+              //@ts-ignore
+              setLoginOrRegister((prevState: "register" | "login") => {
+                prevState === "register" ? "login" : "register";
+              })
+            );
           }}
         >
           {registerOrLogin === "register"

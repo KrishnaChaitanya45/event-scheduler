@@ -79,7 +79,7 @@ function Day({
         )}
       </button>
       {filteredEvents.length > 0 && (
-        <div className="flex flex-col gap-2 p-2">
+        <div className="flex flex-row items-center justify-start gap-2 py-2 px-4">
           {filteredEvents.map((event, i) => (
             <div
               key={i}
@@ -87,9 +87,7 @@ function Day({
                 backgroundColor: event.label,
               }}
               className=" text-white rounded-lg p-2 text-sm"
-            >
-              {event.title}
-            </div>
+            ></div>
           ))}
         </div>
       )}
